@@ -25,4 +25,4 @@ quite some time. Please try to be generic in your improvements and try to see "o
 License and Warranty
 Please check the file LICENSE.md for the details.
 
-Regards, Matteo Destro
+Regards, Matteo Destro"# GSM-Library" 
