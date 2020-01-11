@@ -1,0 +1,184 @@
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+Io_GSM	KEYWORD1
+Isr_GSM	KEYWORD1
+Uart_GSM	KEYWORD1
+GenericCmd_GSM	KEYWORD1
+SecurityCmd_GSM	KEYWORD1
+PhoneBookCmd_GSM	KEYWORD1
+SmsCmd_GSM	KEYWORD1
+PhonicCallCmd_GSM	KEYWORD1
+GprsCmd_GSM	KEYWORD1
+TcpIpCmd_GSM	KEYWORD1
+HttpCmd_GSM	KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+EnableDisableDebugSerial	KEYWORD2
+SetBaudRateUart1	KEYWORD2
+WriteData	KEYWORD2
+ExecuteUartState	KEYWORD2
+ClearBuffer	KEYWORD2
+ClearTempString	KEYWORD2
+ClearUrlParametersString	KEYWORD2
+
+ProcessGsmError	KEYWORD2
+#######################################
+
+#######################################
+#	IO CMD
+SetOutputLed	KEYWORD2
+SetOutputTrigger	KEYWORD2
+CheckOutputLed	KEYWORD2
+CheckOutputTrigger	KEYWORD2
+LedOn	KEYWORD2
+LedOff	KEYWORD2
+TriggerOn	KEYWORD2
+TriggerOff	KEYWORD2
+LedBlink	KEYWORD2
+#######################################
+
+#######################################
+#	ISR CMD
+EnableLibInterrupt	KEYWORD2
+Ext_Timer1_Vector   KEYWORD2
+#######################################
+
+#######################################
+#	INIT CMD
+InitGsmSendCmd	KEYWORD2
+InitGsmWaitAnswer	KEYWORD2
+InitGprsSendCmd	KEYWORD2
+InitGprsWaitAnswer	KEYWORD2
+InitHttpSendCmd	KEYWORD2
+InitHttpWaitAnswer	KEYWORD2
+
+InitPowerON_GSM	KEYWORD2
+InitPowerOFF_GSM	KEYWORD2
+InitReset_GSM	KEYWORD2
+
+Init_GPRS	KEYWORD2
+#######################################
+
+#######################################
+#	GENERICS CMD
+PswdEepromStartAddSetup	KEYWORD2
+InitPowerON_GSM	KEYWORD2
+InitReset_GSM	KEYWORD2
+SetCmd_SwPowerDown	KEYWORD2
+SetCmd_HwPowerDown	KEYWORD2
+SetCmd	KEYWORD2
+
+SetCmd_AT_CFUN	KEYWORD2
+SetCmd_AT_CALS	KEYWORD2
+SetCmd_AT_CALM	KEYWORD2
+SetCmd_AT_CRSL	KEYWORD2
+SetCmd_AT_CLVL	KEYWORD2
+SetCmd_AT_CMIC	KEYWORD2
+SetCmd_ATQ_CPAS	KEYWORD2
+SetCmd_ATQ_COPS	KEYWORD2
+SetCmd_ATQ_GMI	KEYWORD2
+SetCmd_ATQ_GMM	KEYWORD2
+SetCmd_ATQ_GMR	KEYWORD2
+SetCmd_ATQ_GSN	KEYWORD2
+SetCmd_AT_CCLK	KEYWORD2
+SetCmd_ATQ_CREG	KEYWORD2
+SetCmd_ATQ_CSQ	KEYWORD2
+
+ConvertNumberToString	KEYWORD2
+ConvertFloatToString	KEYWORD2
+
+GsmSendCmd	KEYWORD2
+GsmWaitAnswer	KEYWORD2
+ProcessUnsolicitedCode	KEYWORD2
+UartContinuouslyRead	KEYWORD2
+GsmAnswerStateProcess	KEYWORD2
+#######################################
+
+#######################################
+#	PHONEBOOK CMD
+SetCmd_AT_CPBS	KEYWORD2
+SetCmd_AT_CPBR	KEYWORD2
+SetCmd_AT_CPBF	KEYWORD2
+SetCmd_AT_CPBW	KEYWORD2
+
+GsmPhoneBookWaitAnswer	KEYWORD2
+#######################################
+
+#######################################
+#	SMS CMD
+SetCmd_AT_CPMS	KEYWORD2
+SetCmd_AT_CMGD	KEYWORD2
+SetCmd_AT_CMGR	KEYWORD2
+SetCmd_AT_CMGS	KEYWORD2
+SetCmd_AT_CMGW	KEYWORD2
+SetCmd_AT_CMSS	KEYWORD2
+
+GsmSmsWaitAnswer	KEYWORD2
+#######################################
+
+#######################################
+#	PHONIC CALL CMD
+SetCmd_ATA	KEYWORD2
+SetCmd_ATD	KEYWORD2
+SetCmd_ATD_PhoneNumberMemory	KEYWORD2
+SetCmd_ATDL	KEYWORD2
+SetCmd_ATH	KEYWORD2
+
+GsmPhonicCallWaitAnswer	KEYWORD2
+#######################################
+
+#######################################
+#	SECURITY CMD
+SetCmd_ATQ_SPIC	KEYWORD2
+SetCmd_ATQ_TPIN	KEYWORD2
+SetCmd_ATQ_QRTPIN	KEYWORD2
+SetCmd_ATQ_CPIN	KEYWORD2
+
+SetCmd_CPIN	KEYWORD2
+SetCmd_CPIN_PUK	KEYWORD2
+SetCmd_CLCK	KEYWORD2
+SetCmd_CPWD	KEYWORD2
+
+GsmSecurityWaitAnswer	KEYWORD2
+#######################################
+
+#######################################
+#	GPRS CMD
+GprsEepromStartAddSetup	KEYWORD2
+
+SetCmd_AT_CGATT	KEYWORD2
+SetCmd_AT_CGREG	KEYWORD2
+
+GprsWaitAnswer	KEYWORD2
+#######################################
+
+#######################################
+#	TCP/IP CMD
+TcpIpEepromStartAddSetup	KEYWORD2
+
+SetCmd_AT_CIPSTART	KEYWORD2
+SetCmd_AT_CIPCLOSE	KEYWORD2
+SetCmd_AT_CIPSEND	KEYWORD2
+SetCmd_AT_CIPSTATUS	KEYWORD2
+SetCmd_AT_CIPSEND_Step2	KEYWORD2
+
+TcpIpWaitAnswer	KEYWORD2
+#######################################
+
+#######################################
+#	TCP/IP CMD
+HttpEepromStartAddSetup	KEYWORD2
+
+SetCmd_AT_HTTP_STATUS	KEYWORD2
+SetCmd_AT_HTTP_INIT	KEYWORD2
+SetCmd_AT_HTTP_TERM	KEYWORD2
+SetCmd_AT_HTTP_PARA	KEYWORD2
+SetCmd_AT_HTTP_ACTION	KEYWORD2
+
+HttpWaitAnswer	KEYWORD2
+#######################################

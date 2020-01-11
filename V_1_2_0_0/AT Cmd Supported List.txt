@@ -1,0 +1,146 @@
+/*********************************************************************
+ *
+ *       List of AT commands supported by the library
+ *
+ *********************************************************************
+ * FileName:        AT Cmd Supported List.txt
+ * Revision:        1.0.0 (First issue)
+ * Date:            19/01/2019
+ *
+ * Dependencies:    
+ *
+ * Arduino Board:   Arduino Uno, Arduino Mega 2560, Fishino Uno, Fishino Mega 2560       
+ *
+ * Company:         Futura Group srl
+ *                  www.Futurashop.it
+ *                  www.open-electronics.org
+ *
+ * Developer:       Destro Matteo
+ *
+ * Support:         info@open-electronics.org
+ * 
+ * Software License Agreement
+ *
+ * Copyright (c) 2016, Futura Group srl 
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice, this
+ *    list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
+ *    and/or other materials provided with the distribution.
+ *
+ *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ *  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ *  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ *  DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ *  ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ *  (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ *  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ *  ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ **********************************************************************/
+ 
+/*
+
+LEGEND -> Y = YES; N = N0; ### = Not supported to the GSM Engine; @@@ = Not implemented yet in the library;
+ __________________________________________________________________________________________________________________________________________________________________________________________________________
+|                            |                                                                                |                          |                                |                                |
+|                            | SIMCOM                                                                         | QUECTEL                  | FIBOCOM                        | AI THINKER                     |
+| ___________________________|________________________________________________________________________________|__________________________|________________________________|________________________________|
+|            |               |                          |                          |                          |                          |                                |                                |
+| INIT CMD ? | GENERIC CMD ? | SIM800C                  | SIM900                   | SIM928A                  | M95                      | G510                           | A9                             |
+|____________|_______________|__________________________|__________________________|__________________________|__________________________|________________________________|________________________________|
+|     Y      |       N       | AT                       | AT                       | AT                       | AT                       | AT                             | AT                             | 
+|     Y      |       N       | AT&F0                    | AT&F0                    | AT&F0                    | AT&F0                    | AT&F0                          | AT&F0                          | Set all TA parameters to manufacturer defaults
+|     Y      |       N       | AT&W0                    | AT&W0                    | AT&W0                    | AT&W0                    | AT&W0                          | AT&W0                          | Store the current configuration in profile 0
+|     Y      |       N       | ATV1                     | ATV1                     | ATV1                     | ATV1                     | ATV1                           | ATV1                           | Set TA Response Format (if <n> = 1 -> Long Result code format)
+|     Y      |       N       | ATQ0                     | ATQ0                     | ATQ0                     | ATQ0                     | ATQ0                           | ATQ0                           | Set Result Code Presentation Mode (if <n> = 0 -> TA transmits result code)
+|     Y      |       N       | ATE0                     | ATE0                     | ATE0                     | ATE0                     | ATE0                           | ATE0                           | Set Command Echo Mode (if <n> = 0 -> Echo mode off)
+|     Y      |       N       | AT+CMEE=1                | AT+CMEE=1                | AT+CMEE=1                | AT+CMEE=1                | AT+CMEE=1                      | AT+CMEE=1                      | Set Report Mobile Equiment Error (if <n> = 1 -> Enable +CME ERROR - Use numeric error)
+|     Y      |       N       | AT+IPR=0                 | AT+IPR=0                 | AT+IPR=0                 | AT+IPR=0                 | AT+IPR=0                       | AT+IPR=0                       | Set TE-TA Autobaud mode
+|     Y      |       N       | AT+ICF=3,0               | AT+ICF=3,0               | AT+ICF=3,0               | AT+ICF=3,0               | AT+ICF=3,4                     | AT+ICF=3,0                     | Set TE-TA Control Character Framing (8 Data, 0 Parity, 1 Stop) - (Parity Odd)
+|     Y      |       N       | AT+IFC=0,0               | AT+IFC=0,0               | AT+IFC=0,0               | AT+IFC=0,0               | AT+IFC=0,0                     | AT+IFC=0,0                     | Set TE-TA Local Data Flow Control (No Flow control)
+|     Y      |       Y       | AT+CREG=n                | AT+CREG=n                | AT+CREG=n                | AT+CREG=n                | AT+CREG=n                      | AT+CREG=n                      | Check if PIN is set
+|     Y      |       Y       | AT+SPIC                  | AT+SPIC                  | AT+SPIC                  | AT+QTRPIN                | AT+TPIN?                       | AT^CPINC                       | Check times remained to input SIM PIN/PUK 
+|     Y      |       Y       | AT+CPIN="xxxx"           | AT+CPIN="xxxx"           | AT+CPIN="xxxx"           | AT+CPIN="xxxx"           | AT+CPIN="xxxx"                 | AT+CPIN="xxxx"                 | Set PIN. "xxx" is the PIN code
+|     N      |       Y       | AT+CALS=0                | AT+CALS=0                | AT+CALS=0                | AT+CALS=0                | AT+CALS=0                      | ###                            | Select Alert Sound (0 - 19)
+|     Y      |       Y       | AT+CALM=0                | AT+CALM=0                | AT+CALM=0                | AT+CALM=0                | AT+CALM=0                      | ###                            | Set Alert Sound Mode: 0 Normal mode; 1 Silent mode
+|     Y      |       Y       | AT+CRSL=60               | AT+CRSL=60               | AT+CRSL=60               | AT+CRSL=60               | AT+CRSL=60                     | ###                            | Set Ringer Sound Level (0-100 Value) - 0 is lowest volume (not mute)
+|     Y      |       Y       | AT+CLVL=60               | AT+CLVL=60               | AT+CLVL=60               | AT+CLVL=60               | AT+CLVL=60                     | @@@ (AT+CLVL=60)               | Set Loud Speaker Volume Level (0-100 Value) - 0 is lowest volume (not mute)
+|     Y      |       Y       | AT+CMIC=0,6              | AT+CMIC=0,6              | AT+CMIC=0,6              | AT+QMIC=0,2              | AT+MMICG=4                     | @@@ (AT+VGR=5)                 | Set MIC Gain: <Channel> 0, value of gain 8
+|     Y      |       N       | AT+CRC=1                 | AT+CRC=1                 | AT+CRC=1                 | AT+CRC=1                 | AT+CRC=1                       | AT+CRC=1                       | Set Cellular Result Code for Incoming Call Indication (if <n> = 1 -> Enable Extended Format)
+|     Y      |       N       | AT+CLIP=1                | AT+CLIP=1                | AT+CLIP=1                | AT+CLIP=1                | AT+CLIP=1                      | AT+CLIP=1                      | Set Calling Line Identification Presentation (if <n> = 1 -> Enable CLIP Notification)
+|     Y      |       N       | AT+CMGF=1                | AT+CMGF=1                | AT+CMGF=1                | AT+CMGF=1                | AT+CMGF=1                      | AT+CMGF=1                      | Set SMS Message Format (if <n> = 1 -> Text Mode; 0 -> PDU Mode)
+|     Y      |       N       | AT+CSCS="IRA"            | AT+CSCS="IRA"            | AT+CSCS="IRA"            | AT+CSCS="IRA"            | AT+CSCS="IRA"                  | AT+CSCS="GSM"                  | Set TE Character Set ("IRA" -> International Reference Alphabet) OR Set TE Character Set ("GSM" -> GSM 7bit) for A9
+|     Y      |       N       | AT+CNMI=1,1,0,0,0        | AT+CNMI=1,1,0,0,0        | AT+CNMI=1,1,0,0,0        | AT+CNMI=1,1,0,0,0        |AT+CNMI=1,1,0,0,0               | AT+CNMI=1,1,0,0,0              | Set New SMS Message Indications
+|     Y      |       Y       | AT+CPMS="SM","SM","SM"   | AT+CPMS="SM","SM","SM"   | AT+CPMS="SM","SM","SM"   | AT+CPMS="SM","SM","SM"   | AT+CPMS="SM","SM","SM"         | AT+CPMS="SM","SM","SM"         | Set Preferrend SMS Message Storage (Default)
+|     Y      |       N       | AT+CSMP=17,167,0,0       | AT+CSMP=17,167,0,0       | AT+CSMP=17,167,0,0       | AT+CSMP=17,167,0,0       | AT+CSMP=17,167,0,0             | AT+CSMP=17,167,0,0             | Set SMS Text Mode Parameters
+|     Y      |       Y       | AT+CREG=2                | AT+CREG=2                | AT+CREG=2                | AT+CREG=2                | AT+CREG=2                      | AT+CREG=2                      | Set Network Registration (if <n> = 2 -> Enable network registration unsolicited result code with location information)
+|     N      |       Y       | AT+CFUN=x                | AT+CFUN=x                | AT+CFUN=x                | AT+CFUN=x                | AT+CFUN=x                      | @@@ (AT+CFUN=x)                | Set Phone Functionality (if <x> = 0 -> Minimum functionality; 1 -> Full functionality; 4 -> Disable phone both transmit and receive RF circuits)
+|     N      |       Y       | AT+CCLK=......           | AT+CCLK=......           | AT+CCLK=......           | AT+CCLK=......           | AT+CCLK=......                 | @@@ (AT+CCLK=......)           | Write clock
+|     N      |       Y       | AT+CPAS                  | AT+CPAS                  | AT+CPAS                  | AT+CPAS                  | AT+CPAS                        | @@@ (AT+CPAS)                  | Phone Activity Status
+|     N      |       Y       | AT+CSQ                   | AT+CSQ                   | AT+CSQ                   | AT+CSQ                   | AT+CSQ                         | @@@ (AT+CSQ)                   | Signal quantity report
+|     N      |       Y       | AT+CREG?                 | AT+CREG?                 | AT+CREG?                 | AT+CREG?                 | AT+CREG?                       | @@@ (AT+CREG?)                 | Network registration Status Query
+|     N      |       Y       | AT+CCLK?                 | AT+CCLK?                 | AT+CCLK?                 | AT+CCLK?                 | AT+CCLK?                       | @@@ (AT+CCLK?)                 | Read clock
+|     N      |       Y       | AT+COPS?                 | AT+COPS?                 | AT+COPS?                 | AT+COPS?                 | AT+COPS?                       | @@@ (AT+COPS?)                 | Operator Selection
+|     N      |       Y       | AT+GMI                   | AT+GMI                   | AT+GMI                   | AT+GMI                   | AT+GMI                         | @@@ (AT+GMI)                   | Request Manufacturer Identification (AT Commands According to V.25TER)
+|     N      |       Y       | AT+CGMI                  | AT+CGMI                  | AT+CGMI                  | AT+CGMI                  | AT+CGMI                        | @@@ (AT+CGMI)                  | Request Manufacturer Identification (AT Commands According to 3GPP TS 27.007)
+|     N      |       Y       | AT+GMM                   | AT+GMM                   | AT+GMM                   | AT+GMM                   | AT+GMM                         | @@@ (AT+GMM)                   | Request TA Model Identification (AT Commands According to V.25TER)
+|     N      |       Y       | AT+CGMM                  | AT+CGMM                  | AT+CGMM                  | AT+CGMM                  | AT+CGMM                        | @@@ (AT+CGMM)                  | Request TA Model Identification (AT Commands According to 3GPP TS 27.007)
+|     N      |       Y       | AT+GMR                   | AT+GMR                   | AT+GMR                   | AT+GMR                   | AT+GMR                         | @@@ (AT+GMR)                   | Request TA Revision Identification of Software Release (AT Commands According to V.25TER) 
+|     N      |       Y       | AT+CGMR                  | AT+CGMR                  | AT+CGMR                  | AT+CGMR                  | AT+CGMR                        | @@@ (AT+CGMR)                  | Request TA Revision Identification of Software Release (AT Commands According to 3GPP TS 27.007)
+|     N      |       Y       | AT+GSN                   | AT+GSN                   | AT+GSN                   | AT+GSN                   | AT+GSN                         | @@@ (AT+GSN)                   | Request TA Serial Number Identification (IMEI) (AT Commands According to V.25TER)
+|     N      |       Y       | AT+CGSN                  | AT+CGSN                  | AT+CGSN                  | AT+CGSN                  | AT+CGSN                        | ###                            | Request TA Serial Number Identification (IMEI) (AT Commands According to 3GPP TS 27.007)
+|     N      |       Y       | AT+CLCK=......           | AT+CLCK=......           | AT+CLCK=......           | AT+CLCK=......           | AT+CLCK=......                 | @@@ (AT+CLCK=......)           | This command is used to lock/unlock ME or network facility. It's required PIN/PUK code
+|     N      |       Y       | AT+CPWD=......           | AT+CPWD=......           | AT+CPWD=......           | AT+CPWD=......           | AT+CPWD=......                 | @@@ (AT+CPWD=......)           | This command is used to change password
+|     N      |       Y       | ATA                      | ATA                      | ATA                      | ATA                      | ATA                            | @@@ (ATA)                      | Answer incoming call
+|     N      |       Y       | ATD                      | ATD                      | ATD                      | ATD                      | ATD                            | @@@ (ATD)                      | Mobile Originated Call to Dial A number
+|     N      |       Y       | ATD>                     | ATD>                     | ATD>                     | ATD>                     | ATD>                           | @@@ (ATD>)                     | Originate Call to phone number in current memory
+|     N      |       Y       | ATDL                     | ATDL                     | ATDL                     | ATDL                     | ATDL                           | @@@ (AATDL)                    | Redial Last Telephone Number Used
+|     N      |       Y       | ATH                      | ATH0                     | ATH0                     | ATH0                     | ATH                            | @@@ (ATH)                      | Hang-Up incoming call
+|     N      |       Y       | AT+CPBS=......           | AT+CPBS=......           | AT+CPBS=......           | AT+CPBS=......           | AT+CPBS=......                 | @@@ (AT+CPBS=......)           | Selects PhoneBook Memory Storage. See datasheet for details
+|     N      |       Y       | AT+CPBR=......           | AT+CPBR=......           | AT+CPBR=......           | AT+CPBR=......           | AT+CPBR=......                 | @@@ (AT+CPBR=......)           | Reads current PhoneBook Entries. See datasheet for details
+|     N      |       Y       | AT+CPBW=......           | AT+CPBW=......           | AT+CPBW=......           | AT+CPBW=......           | AT+CPBW=......                 | @@@ (AT+CPBW=......)           | Writes PhoneBook Entry
+|     N      |       Y       | AT+CPBF=......           | AT+CPBF=......           | AT+CPBF=......           | AT+CPBF=......           | AT+CPBF=......                 | @@@ (AT+CPBF=......)           | Finds Phonebook entries
+|     N      |       Y       | AT+CPBS?                 | AT+CPBS?                 | AT+CPBS?                 | AT+CPBS?                 | AT+CPBS?                       | @@@ (AT+CPBS?)                 | Checks selected PhoneBook Memory
+|     N      |       Y       | AT+CPBR?                 | AT+CPBR?                 | AT+CPBR?                 | AT+CPBR?                 | AT+CPBR?                       | @@@ (AT+CPBR?)                 | Checks location range supported by the current storage
+|     N      |       Y       | AT+CMGD=......           | AT+CMGD=......           | AT+CMGD=......           | AT+CMGD=......           | AT+CMGD=......                 | @@@ (AT+CMGD=.....)            | Deletes SMS to memory
+|     N      |       Y       | AT+CMGR=......           | AT+CMGR=......           | AT+CMGR=......           | AT+CMGR=......           | AT+CMGR=......                 | @@@ (AT+CMGR=......)           | Reads SMS to memory
+|     N      |       Y       | AT+CMGS=......           | AT+CMGS=......           | AT+CMGS=......           | AT+CMGS=......           | AT+CMGS=......                 | @@@ (AT+CMGS=......)           | Sends SMS
+|     N      |       Y       | AT+CMGW=......           | AT+CMGW=......           | AT+CMGW=......           | AT+CMGW=......           | AT+CMGW=......                 | @@@ (AT+CMGW=......)           | Writes SMS to memory
+|     N      |       Y       | AT+CMSS=......           | AT+CMSS=......           | AT+CMSS=......           | AT+CMSS=......           | AT+CMSS=......                 | @@@ (AT+CMSS=......)           | Sends SMS by memory
+|     N      |       Y       | AT+CPMS?                 | AT+CPMS?                 | AT+CPMS?                 | AT+CPMS?                 | AT+CPMS?                       | @@@ (AT+CPMS?)                 | Query Preferred SMS Message Storage
+|     Y      |       Y       | AT+CGATT=n               | AT+CGATT=n               | AT+CGATT=n               | AT+CGATT=n               | @@@ (AT+CGATT=n)               | @@@ (AT+CGATT=n)               | Attach or Detach from GPRS Service
+|     N      |       Y       | AT+CGREG=n               | AT+CGREG=n               | AT+CGREG=n               | AT+CGREG=n               | ###                            | @@@ (AT+CGREG=n)               | Set Network Registration (if <n> = 2 -> Enable network registration unsolicited result code with location information)
+|     Y      |       N       | AT+CGEREP=1              | AT+CGEREP=1              | AT+CGEREP=1              | AT+CGEREP=1              | ###                            | @@@ (AT+CGEREP=1)              | Control Unsolicited GPRS Event Reporting
+|     Y      |       N       | AT+CGDCONT=1,"IP",...... | AT+CGDCONT=1,"IP",...... | AT+CGDCONT=1,"IP",...... | AT+CGDCONT=1,"IP",...... | @@@ (AT+CGDCONT=1,"IP",......) | @@@ (AT+CGDCONT=1,"IP",......) | Define PDP Context
+|     Y      |       N       | AT+CGACT=1,1             | AT+CGACT=1,1             | AT+CGACT=1,1             | AT+CGACT=1,1             | @@@ (AT+CGACT=1,1)             | @@@ (AT+CGACT=1,1)             | PDP Context Activate or Deactivate
+|     Y      |       N       | AT+CGPADDR=1             | AT+CGPADDR=1             | AT+CGPADDR=1             | AT+CGPADDR=1             | @@@ (AT+CGPADDR=1)             | @@@ (AT+CGPADDR=1)             | Show PDP Address
+|     Y      |       Y       | AT+CGATT?                | AT+CGATT?                | AT+CGATT?                | AT+CGATT?                | @@@ (AT+CGATT?)                | @@@ (AT+CGATT?)                | Query Signal quantity report
+|     N      |       Y       | AT+CGREG?                | AT+CGREG?                | AT+CGREG?                | AT+CGREG?                | ###                            | @@@ (AT+CGREG?)                | Network registration
+|     Y      |       N       | AT+CIPMUX=n              | AT+CIPMUX=n              | AT+CIPMUX=n              | AT+QIMUX=n               | ###                            | @@@ (AT+CMUX=n)                | Start up Multi-IP Connection; n = 0 Single IP connection; n = 1 Multi IP connection
+|     Y      |       N       | AT+CSTT=......           | AT+CSTT=......           | AT+CSTT=......           | AT+QIREGAPP=......       | @@@ (AT+MIPCALL)               | @@@ (AT+CSTT=......)           | Start Task and Set APN, USER NAME, PASSWORD
+|     Y      |       N       | AT+CIICR                 | AT+CIICR                 | AT+CIICR                 | AT+QIACT                 | ###                            | @@@ (AT+CIICR)                 | Bring up Wireless Connection with GPRS or CSD
+|     Y      |       N       | AT+CIFSR                 | AT+CIFSR                 | AT+CIFSR                 | AT+QILOCIP               | ###                            | @@@ (AT+CIFSR)                 | Get Local IP Address
+|     Y      |       N       | AT+CIPHEAD=1             | AT+CIPHEAD=1             | AT+CIPHEAD=1             | AT+QIHEAD=1              | ###                            | ###                            | Add an IP Head at the Beginning of a Package Received
+|     Y      |       N       | AT+CIPSRIP=1             | AT+CIPSRIP=1             | AT+CIPSRIP=1             | AT+QISHOWRA=1            | ###                            | ###                            | Show Remote IP Address and Port When Received Data
+|     N      |       Y       | AT+CIPSTART=......       | AT+CIPSTART=......       | AT+CIPSTART=......       | AT+QIOPEN=......         | @@@ (AT+MIPOPEN)               | @@@ (AT+CIPSTART=......)       | Start up TCP or UDP Connection
+|     N      |       Y       | AT+CIPSEND               | AT+CIPSEND               | AT+CIPSEND               | AT+QISEND                | @@@ (AT+MIPSEND)               | @@@ (AT+CIPSEND)               | Send Data Through TCP or UDP Connection
+|     N      |       Y       | AT+CIPCLOSE=......       | AT+CIPCLOSE=......       | AT+CIPCLOSE=......       | AT+QICLOSE=......        | @@@ (AT+MIPCLOSE)              | @@@ (AT+CIPCLOSE=......)       | Close TCP or UDP Connection
+|     N      |       Y       | AT+CIPSEND?              | AT+CIPSEND?              | AT+CIPSEND?              | AT+QISEND?               | @@@ (AT+MIPSEND?)              | @@@ (AT+CIPSEND?)              | Query to check max data lenght
+|     N      |       Y       | AT+CIPSTATUS             | AT+CIPSTATUS             | AT+CIPSTATUS             | AT+QISTATE               | @@@ (AT+MIPSTAT)               | @@@ (AT+CIPSTATUS)             | Query Current Connection Status
+|     Y      |       N       | AT+SAPBR=......          | AT+SAPBR=......          | AT+SAPBR=......          | ???                      | ???                            | ???                            | Configure bearer profile
+|     N      |       Y       | AT+HTTPINIT              | AT+HTTPINIT              | AT+HTTPINIT              | ???                      | ???                            | ???                            | Init HTTP service
+|     N      |       Y       | AT+HTTPTERM              | AT+HTTPTERM              | AT+HTTPTERM              | ???                      | ???                            | ???                            | Terminate HTTP service
+|     N      |       Y       | AT+HTTPSTATUS?           | AT+HTTPSTATUS?           | AT+HTTPSTATUS?           | ???                      | ???                            | ???                            | Query the HTTP status
+|     N      |       Y       | AT+HTTPPARA=......       | AT+HTTPPARA=......       | AT+HTTPPARA=......       | ???                      | ???                            | ???                            | Set HTTP Parameters Value
+|     N      |       Y       | AT+HTTPACTION=......     | AT+HTTPACTION=......     | AT+HTTPACTION=......     | ???                      | ???                            | ???                            | et HTTP Method Action (GET; POST; HEAD; DELETE) 
+|____________|_______________|__________________________|__________________________|__________________________|__________________________|________________________________|________________________________|
+
+*/
