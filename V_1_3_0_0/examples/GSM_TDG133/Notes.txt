@@ -1,0 +1,237 @@
+/*
+* ===========================================================================================================
+* Leds management
+
+- Led Trigger 3 used during GSM engine initializattion.
+  T = 250mSec - 25% ON - 75% OFF (Fast blink)
+- Led Trigger 3 used after GSM engine initialization to indicate that the initialization process is terminated.
+  T = 2Sec - 25% ON - 75% OFF (Very Slow blink)
+- When the system process a command the led Trigger 3 is fixed turn on. After command processing the led 3
+  turn off. The led Trigger 3 return to blink very slow 
+
+- Led associate to the relay 1: Led 4 (Red) wired to the I/O 37 (Pin 62)
+  If relay 1 ON led 4 ON; if relay 1 OFF led 4 OFF
+- Led associate to the relay 2: Led 5 (Red) wired to the I/O 36 (Pin 61)
+  If relay 2 ON led 5 ON; if relay 2 OFF led 5 OFF 
+
+- Led associate to the input 1: Led 6 (Yellow) wired to the I/O 35 (Pin 64)
+  If input 1 ON led 6 ON; if input 1 OFF led 6 OFF
+- Led associate to the input 2: Led 7 (Yellow) wired to the I/O 34 (Pin 63)
+  If input 2 ON led 7 ON; if input 2 OFF led 7 OFF
+  
+- Leds yellow LD6 and LD7 are used in several cases. The first one is during the check of validity of the
+  Phone number saved into the first index of the PhoneBook. In this case this two leds blink alternatively
+  whit a period of 500mSec (250mSec LD6 ON and LD7 OFF; 250mSec LD6 OFF and LD7 ON)
+  The next case is when the input 1 (LD6) or input 2(LD7) are active. When the inputs are not active 
+  then the leds are off
+
+- Led associated to the outgoing SMS: Led 8 (Green) wired to the I/O 33 (Pin 66)
+  If outgoing SMS Led 8 ON otherwise OFF
+- Led associated to the outgoing Call: Led 8 (Green) wired to the I/O 33 (Pin 66)
+  If outgoing Call Led 8 Blink otherwise OFF
+
+- Led associated to the incoming SMS: Led 9 (Green) wired to the I/O 32 (Pin 65)
+  If incoming SMS Led 9 ON otherwise OFF
+- Led associated to the incoming Call: Led 9 (Green) wired to the I/O 32 (Pin 65)
+  If incoming Call Led 9 Blink otherwise OFF
+* ===========================================================================================================
+
+* ===========================================================================================================
+* Functions supported
+
+- Input/Output report. This function, if enabled, sends the states of  the Inputs and outputs when the 
+  corresponding timeout expired
+  
+- PowerUp SMS. This function, if enabled, sends the Power Up SMS
+
+- StartUp SMS. This function, if enabled, sends the Start Up SMS
+
+- SMS of the Inputs State. This function sends the state of the inputs. The state of the inputs are send only
+  of the first eight number of the phonebook if enabled. Also, if enabled, this function perform a voice call
+  (Only the first eight number in the phonebook are enabled to receive a voice call)
+
+- Incoming call. This function is used to manage an incoming call. When incoming call occur, and the phone
+  number is included into a phonebook, then the system use this to pilot the relay 1
+  
+- Check first location of the PhoneBook. This function check the first location of the PhoneBook and if no
+  validit number is found the system enter in a wait state for five minutes. In this time laps the system
+  wait a phonic call to freeze a phone number into the phonebook (Admin User)
+
+- Incoming SMS. This function is used to manage the incoming SMS and, if the message is valid, the 
+  command will be execute
+  
+- Outgoing Echo SMS. This function, if enabled, is used to send at the phone number selected the SMS received and
+  not processed because it isn't a valid command
+
+- Outgoing Answer SMS. This function sends at the phone number, used to send a setup command, the answer
+  through an SMS where required
+  
+* ===========================================================================================================
+
+* ===========================================================================================================
+*	Commands list supported
+*
+*	Command used to change the password:
+*	"PWDxxxxx;pwd"         -> "xxxxx" is the new password; "pwd" is the current password
+*
+*	Command used to print eeprom data:
+*	"PRNEE;pwd"            -> "pwd" is the current password
+*
+*	Command used to store a phone number:
+*	"NUMx+39nnnnnnnnnnn;text;pwd"  -> "x" position in the list; "nnnnnnnnnnn" is the phone number with country code (+39 for Italy); "text" is the description (Max lenght 14 chars); "pwd" is the current password
+*
+*	Command used to remove a phone number:
+*	"NUMx;pwd"             -> "x" position in the list; "pwd" is the current password
+*
+*	Command used to request the list of phone numbers currently stored in the device (Only first 8 locations):
+*	"NUM?;pwd"             -> "pwd" is the current password
+*
+*	Command used to request a single phone numbers currently stored in the device:
+*	"NUM?;x;pwd"           -> "x" position in the list; "pwd" is the current password
+*
+*	Command used to request all phone numbers currently stored in the device (250 locations):
+*	"ANUM?;pwd"            -> "x" position in the list; "pwd" is the current password
+*
+*	Command used to find a number into a PhoneBook:
+*	"FNUM?;text;pwd"       -> "text" text to find into PhoneBook (Max lenght 14 chars); "pwd" is the current password                             
+*
+*	(Not implemented) Command used to store the phone numbers that control the gate opener function only
+*	"MAC+39xxxxxxxxxx;pwd" -> "xxxxxxxxxxxx" is the phone number you want to store in the list (200 numbers max) with international code; "pwd" is the curren password
+*
+*	(Not implemented) Command used to delete a phone number from the gate control list
+*	"DAC+39xxxxxxxxxx;pwd" -> "xxxxxxxxxxxx" is the phone number you want to store in the list (200 numbers max) with international code; "pwd" is the curren password
+*	"DAC;pwd"              -> Delete all numbers in the gate control list; "pwd" is the curren password
+*
+*	Command used to reset the initial settings of the system and delete all stored phone numbers:
+*	"RES;pwd"              -> "pwd" is the current password
+*
+*	Command used to delete SMS by SIM memory      
+*	"DSMSx;pwd;            -> "x" is the memoery index, "pwd" is the current password
+*
+*	Command used to delete all SMS by SIM memory      
+*	"DASMS;pwd;            -> "pwd" is the current password
+*
+*	Command used to allow the number in the specified position to receive SMS on input status:
+*	"SMSxxxxxxxx:ON;pwd"   -> "xxxxxxxx" position of the first 8 numbers; "ON" activates the function; "pwd" is the current password
+*	"SMSxxxxxxxx:OFF;pwd"  -> "xxxxxxxx" position of the first 8 numbers; "OFF" deactivates the function; "pwd" is the current password
+*
+*	Command used to allows the number on the specified position to receive the ringtone on the inputs status:
+*	"VOCxxxxxxxx:ON;pwd"   -> "xxxxxxxx" position of the first 8 numbers; "ON" activates the function; "pwd" is the current password
+*	"VOCxxxxxxxx:OFF;pwd"  -> "xxxxxxxx" position of the first 8 numbers; "OFF" deactivates the function; "pwd" is the current password
+*
+*	Command used to set a HIGH, LOW or TOGGLE level as the alarm condition for inputs IN1 or IN2:
+*	"LIVx:A;pwd"           -> "x" stands for input 1 or 2; "A" stands for HIGH level; "pwd" is the current password
+*	"LIVx:B;pwd"           -> "x" stands for input 1 or 2; "B" stands for LOW level; "pwd" is the current password
+*	"LIVx:V;pwd"           -> "x" stands for input 1 or 2; "V" stands for variation (LOW to HIGH or HIGH to LOW); "pwd" is the current password
+*
+*	Command used to request the alarm activation level:
+*	"LIV?"
+*
+*	Command used to set the inhibition time on input 1:
+*	"INIx:mm;pwd"          -> "x" is the input; "mm" is the time in prime minutes; "pwd" is the current password
+*
+*	Command used to request the current inhibition time setting regarding the inputs:
+*	"INI?"
+*
+*	Command used to reset/disable the inhibition time if input 1 is idle:
+*	"TIZ1x;pwd"            -> "x" is the setting parameter (if "0" no reset; if "1" reset); "pwd" is the current password
+*
+*	Command used to reset/disable the inhibition time if input 2 is idle:
+*	"TIZ2x;pwd"            -> "x" is the setting parameter (if "0" no reset; if "1" reset); "pwd" is the current password
+*
+*	Command used to define the lenght of the observation time regarding input 1:
+*	"OSSx:ss;pwd"          -> "x" is the input index; "ss" is the time in seconds; "pwd" is the current password
+*
+*	Command used to request the current observation time setting regarding the inputs
+*	"OSS?"
+*
+*	Command used to define the message the device sends to the numbers in the list enabled to receive alarm SMS when the input 1 gets the alert of tension presence:
+*	"TIN1A:xxxx;pwd"       -> "xxxx" is the message you want to write (100 characters max. including spaces). The text message does not accept the semi colon ";" and all letters must be capitalized; "pwd" is the current password
+*	                           The default message is "ALARM!! INPUT 1 HIGH"
+*
+*	Command used to define the message the device sends to the numbers in the list enabled to receive alarm SMS when the input 1 gets the alert of tension absence:
+*	"TIN1B:xxxx;pwd"       -> "xxxx" is the message you want to write (100 characters max. including spaces). The text message does not accept the semi colon ";" and all letters must be capitalized; "pwd" is the current password
+*	                           The default message is "ALARM!!"
+*
+*	Command used to define the message the device sends to the numbers in the list enabled to receive alarm SMS when the input 2 gets the alert of tension presence:
+*	"TIN2A:xxxx;pwd"       -> "xxxx" is the message you want to write (100 characters max. including spaces). The text message does not accept the semi colon ";" and all letters must be capitalized; "pwd" is the current password
+*	                           The default message is "ALARM!! INPUT 2 HIGH"
+*
+*	Command used to define the message the device sends to the numbers in the list enabled to receive alarm SMS when the input 2 gets the alert of tension absence:
+*	"TIN2B:xxxx;pwd"       -> "xxxx" is the message you want to write (100 characters max. including spaces). The text message does not accept the semi colon ";" and all letters must be capitalized; "pwd" is the current password
+*	                           The default message is "ALARM!!"
+*
+*	Command used to define the number of SMS that the device must send when the alarm occurs:
+*	"ALNy:xx;pwd"          -> "y" is the input index; "xx" the number of SMS to be sent. If "xx" = 0 disables the SMS sending, if "xx" = 99 if alarm detected the system sends an infinite number of SMS until the alarm disappear; "pwd" is the current password
+*
+*	Command used to request the current setting for the number of sms thath must be send when an alarm occurs
+*	"ALN?"
+*
+*	Command used to activate the specified output relay:
+*	"OUTx:ON;pwd"          -> Activate output relay 1; "pwd" is the current password
+*	"OUTx:OFF;pwd"         -> Deactivate output relay 1; "pwd" is the current password
+*	"OUTx:ss;pwd"          -> Inverts the condition of the specified relay for desired time; "ss" is a period between 1 and 59 seconds; "pwd" is the current password
+*
+*	Command used to request the condition of the remote outputs
+*	"STA?"
+*
+*	Command used to set the time between report SMS sending
+*	"AUTOC:ON;pwd"         -> Enable function to send SMS Input/Output report; "pwd" current password
+*	"AUTOC:OFF;pwd"        -> Disable function to send SMS Input/Output report; "pwd" current password
+*	"AUTOC:hh:mm:ss;pwd"   -> "hh" hours; "mm" minutes; "ss" seconds; "pwd" is the current password
+*
+*	Command used to request the settings of the report function
+*	"AUTOC?"
+*
+*	Command used to set the TEXT format of the SMS in the report mode
+*	"FORS:x;pwd"           -> "x" is the SMS format; "1" TEXT format; "2" Binary format; "pwd" is the current password
+*
+*	Command used to enable the Command to store the relay status in case of black-out and restores it when power is back on
+*	"RIPx;pwd"             -> "x" is the setting parameter (if "0" disabled; if "1" enabled); "pwd" is the current password
+*
+*	Command used to request the current setting for relay status recovery
+*	"RIP?"
+*
+*	Command used to enable the function to send a start-up SMS
+*	"AVVx;pwd"             -> "x" is the setting parameter (if "0" disabled; if "1" enabled); "pwd" is the current password
+*
+*	Command used to set the text of the message that the system sends during start-up
+*	"TSU:xxxxxxxxxxxx;pwd" -> "xxxxxxxxxxxx" is the message you want to write (100 characters max. including spaces). The text message does not accept the semi colon ";" and all letters must be capitalized
+*	                          The default message is "SYSTEM STARTUP"
+*
+*	Command used to define how relay 1 (Related to the gate control) should be enabled when there is an incoming call from one of the 200 phone numbers or one of the 8 numbers in the list
+*	"TAC:ss;pwd"           -> "ss" is the time in seconds during which the relay should remain excited. The default value is 3 seconds; "pwd" is the current password
+*	"TAC:00;pwd"           -> Activates bistable mode; "pwd" is the current password
+*
+*	Command used to set the forward function. This function is used to forward the generic SMs received at the selected number
+*	"ECHO:x;pwd"           -> "x" position in the list. "0" disables ECHO function; "pwd" is the current password
+*
+*	Command used to request the settings of the ECHO function
+*	"ECHO?"
+*
+*	Command used to request the quality of the radio signal
+*	"QUAL?"
+*
+*	Command used to request the SIM Operator Name
+*	"OPER?"
+*
+*	Command used to request the TDG133 Firmware Rev and GSM Rev
+*	"REV?"
+*
+*	Command used to disable all reply message. This command must be positioned at the beginning of a multiple message
+*	"RISP,.........."
+*
+*	Command used to Enable/Disable the notification of the lack of power supply
+*	"PWRFx;pwd"            -> "x" Enable/Disable; "1" Enable; "0" Disable; "pwd" is the current password
+*
+*	Command used to Enable/Disable the notification of return of power supply
+*	"PWRRx;pwd"            -> "x" Enable/Disable; "1" Enable; "0" Disable; "pwd" is the current password
+*
+*	Command used to set the text of the message that the system sends during lack of power supply
+*	"TPWPF:xxxxxxxxxxxx;pwd" -> "xxxxxxxxxxxx" is the message you want to write (100 characters max. including spaces). The text message does not accept the semi colon ";" and all letters must be capitalized; "pwd" is the current password
+*
+*	Command used to set the text of the message that the system sends during go back power supply
+*	"TPWPB:xxxxxxxxxxxx;pwd" -> "xxxxxxxxxxxx" is the message you want to write (100 characters max. including spaces). The text message does not accept the semi colon ";" and all letters must be capitalized; "pwd" is the current password                                                 
+*
+* ===========================================================================================================
+*/
